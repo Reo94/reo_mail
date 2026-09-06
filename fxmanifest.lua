@@ -2,7 +2,7 @@
 -- REO DEVELOPMENT
 -- REO MAIL
 -- Server-Wide Physical Mail & Postal Framework
--- Version 0.1.0 Proof of Concept
+-- Version 0.1.0 — Active Development
 -- ============================================================
 
 fx_version 'cerulean'

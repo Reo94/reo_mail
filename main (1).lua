@@ -27,7 +27,7 @@ end
 
 local function GetNextPOBox()
     local highest = MySQL.scalar.await('SELECT MAX(po_box) FROM reo_mail_profiles')
-    return highest and (tonumber(highest) + 1) or Config.POBox.StartingNumber
+    return highest and (tonumber(highest) + 1) or Config.POBox.StartingNumber or Config.POBox.minNumber or 1000
 end
 
 local function CreateMailProfile(characterId)
@@ -68,8 +68,8 @@ local function ResolveMailingAddress(characterId)
     return {
         type = REO_MAIL.AddressTypes.PO_BOX,
         id = tostring(profile.po_box),
-        label = ('%s %s'):format(Config.POBox.Prefix, profile.po_box),
-        postOffice = Config.PostalService.CentralOffice
+        label = ('%s %s'):format(Config.POBox.Prefix or Config.POBox.prefix or 'PO Box', profile.po_box),
+        postOffice = (Config.PostalService and Config.PostalService.CentralOffice) or 'Central Post Office'
     }
 end
 
@@ -100,7 +100,7 @@ local function CreateMail(data)
         tracking,
         data.senderType or REO_MAIL.SenderTypes.SYSTEM,
         data.senderId,
-        data.senderName or Config.PostalService.Name,
+        data.senderName or (Config.PostalService and Config.PostalService.Name) or (Config.Postal and Config.Postal.defaultSender) or 'San Andreas Postal Service',
         data.recipientCharacterId,
         data.recipientName,
         data.mailType or REO_MAIL.Types.LETTER,
@@ -292,7 +292,88 @@ end)
 
 
 -- ============================================================
--- SECTION 9B: READ PHYSICAL ENVELOPE
+-- SECTION 9B: OPEN PHYSICAL ENVELOPE
+-- ============================================================
+
+lib.callback.register('reo_mail:server:openPhysicalEnvelope', function(source, slotId)
+
+    -- --------------------------------------------------------
+    -- Validate Physical Envelope
+    -- --------------------------------------------------------
+
+    local slot = exports.ox_inventory:GetSlot(source, slotId)
+
+    if not slot or slot.name ~= 'reo_envelope' then
+        return nil, 'invalid_envelope'
+    end
+
+    local metadata = slot.metadata or {}
+    local mailId = tonumber(metadata.mailId)
+
+    if not mailId then
+        return nil, 'invalid_envelope'
+    end
+
+    -- --------------------------------------------------------
+    -- Resolve Active Character
+    -- --------------------------------------------------------
+
+    local characterId = REO_MAIL.Server.GetCharacterId(source)
+
+    if not characterId then
+        return nil, 'character_not_found'
+    end
+
+    -- --------------------------------------------------------
+    -- Retrieve And Validate Postal Record / Ownership
+    -- --------------------------------------------------------
+
+    local mail = MySQL.single.await([[
+        SELECT *
+        FROM reo_mail_items
+        WHERE id = ?
+          AND recipient_character_id = ?
+        LIMIT 1
+    ]], {
+        mailId,
+        characterId
+    })
+
+    if not mail then
+        return nil, 'mail_not_found'
+    end
+
+    -- --------------------------------------------------------
+    -- Mark Physical Envelope As Opened
+    -- --------------------------------------------------------
+
+    if metadata.opened ~= true then
+        metadata.opened = true
+        metadata.label = 'Opened Envelope'
+        metadata.description = 'An opened piece of mail handled by the San Andreas Postal Service.'
+
+        exports.ox_inventory:SetMetadata(source, slotId, metadata)
+    end
+
+    -- --------------------------------------------------------
+    -- Return Updated Envelope Information
+    -- --------------------------------------------------------
+
+    return {
+        mailId = mail.id,
+        senderName = mail.sender_name or 'Unknown Sender',
+        recipientName = mail.recipient_name or 'Unknown Recipient',
+        subject = mail.subject or 'No Subject',
+        trackingNumber = mail.tracking_number or 'Unknown',
+        mailType = mail.mail_type or 'Standard',
+        status = mail.status or 'Unknown',
+        opened = true
+    }
+end)
+
+
+-- ============================================================
+-- SECTION 9C: READ PHYSICAL ENVELOPE
 -- ============================================================
 
 lib.callback.register('reo_mail:server:readPhysicalEnvelope', function(source, slotId)

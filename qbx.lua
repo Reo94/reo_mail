@@ -406,3 +406,94 @@ lib.callback.register('reo_mail:server:openPhysicalEnvelope', function(source, s
         firstOpen = not wasOpened
     }
 end)
+
+-- ============================================================
+-- SECTION 10: PLAYER-TO-PLAYER LETTER DELIVERY
+-- Development interface used by /sendmail.
+-- ============================================================
+
+local function GetCharacterDisplayName(source)
+    local data = GetCharacterData(source)
+    if not data then return nil end
+
+    local charinfo = data.charinfo or {}
+    local firstName = charinfo.firstname or charinfo.firstName
+    local lastName = charinfo.lastname or charinfo.lastName
+
+    local fullName = (('%s %s'):format(firstName or '', lastName or ''))
+        :gsub('^%s+', '')
+        :gsub('%s+$', '')
+
+    if fullName ~= '' then return fullName end
+    return data.name or data.citizenid or 'Unknown Sender'
+end
+
+lib.callback.register('reo_mail:server:sendPlayerLetter', function(source, data)
+    if source == 0 or type(data) ~= 'table' then
+        return { success = false, reason = 'invalid_content' }
+    end
+
+    local senderCharacterId = GetCharacterId(source)
+    if not senderCharacterId then
+        return { success = false, reason = 'character_unavailable' }
+    end
+
+    local poBox = tonumber(data.poBox)
+    local subject = type(data.subject) == 'string' and data.subject:gsub('^%s+', ''):gsub('%s+$', '') or ''
+    local body = type(data.body) == 'string' and data.body:gsub('^%s+', ''):gsub('%s+$', '') or ''
+
+    if not poBox or subject == '' or body == '' or #subject > 100 or #body > 4000 then
+        return { success = false, reason = 'invalid_content' }
+    end
+
+    local recipientProfile = MySQL.single.await(
+        'SELECT character_id, po_box FROM reo_mail_profiles WHERE po_box = ? LIMIT 1',
+        { poBox }
+    )
+
+    if not recipientProfile then
+        return { success = false, reason = 'invalid_recipient' }
+    end
+
+    if recipientProfile.character_id == senderCharacterId then
+        return { success = false, reason = 'self_mail' }
+    end
+
+    local senderName = GetCharacterDisplayName(source)
+    local result = REO_MAIL.Server.CreateMail({
+        recipientCharacterId = recipientProfile.character_id,
+        recipientName = ('PO Box %s Recipient'):format(recipientProfile.po_box),
+        senderType = REO_MAIL.SenderTypes.CHARACTER,
+        senderId = senderCharacterId,
+        senderName = senderName,
+        mailType = REO_MAIL.Types.LETTER,
+        subject = subject,
+        body = body
+    })
+
+    if not result then
+        return { success = false, reason = 'creation_failed' }
+    end
+
+    -- For this development stage, player letters are delivered directly
+    -- to the recipient's persistent mailbox. Postal routing comes later.
+    MySQL.update.await([[
+        UPDATE reo_mail_items
+        SET status = ?, delivered_at = CURRENT_TIMESTAMP
+        WHERE id = ?
+    ]], { REO_MAIL.Status.DELIVERED, result.id })
+
+    if Config.Debug then
+        print(
+            ('[reo_mail] %s (%s) mailed letter %s to PO Box %s (%s).')
+                :format(senderName, senderCharacterId, result.trackingNumber, poBox, recipientProfile.character_id)
+        )
+    end
+
+    return {
+        success = true,
+        mailId = result.id,
+        trackingNumber = result.trackingNumber,
+        poBox = recipientProfile.po_box
+    }
+end)

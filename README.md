@@ -1,34 +1,31 @@
 # REO Mail
 
-**Version:** v0.1.0 — Core Mail Proof of Concept  
-**Developer:** REO Development  
-**Status:** Early Development / Proof of Concept
+**Server-Wide Physical Mail & Postal Framework for FiveM**
 
-REO Mail is a server-wide physical mail and postal framework for FiveM. The v0.1.0 release establishes the basic lifecycle required for persistent character mail and physical inventory-based letters.
+REO Mail is an REO Development project focused on creating a persistent physical postal system that can connect players, residences, businesses, inventories, documents, and other server resources.
 
-> **Development release:** v0.1.0 is a proof of concept. It is not feature complete or intended to represent the final REO Mail system.
+## Current Development Status
 
-## Proof-of-Concept Flow
+The current development checkpoint has a tested end-to-end player mail lifecycle:
 
-**Create Mail → Store Mail → View Mailbox → Claim Envelope → Inspect Envelope → Open Envelope → Read Letter**
+**Player A → Compose Letter → Recipient PO Box → Persistent Mailbox → Physical Envelope → Open → Read**
 
-## Current Functionality
+### Working Features
 
-- Persistent character postal profiles
-- Permanent PO Box assignment
-- Qbox/QBX character integration
-- Persistent mail records through oxmysql
+- Persistent character postal profiles and PO Boxes
+- `/mypobox` to view the current character's PO Box
+- `/mymail` persistent mailbox interface
+- `/sendmail` player-to-player letter composition interface
+- Recipient lookup by PO Box
+- Persistent player-to-player delivery
 - Unique REO tracking numbers
-- `/mypobox` and `/mymail` functionality
-- Physical `reo_envelope` ox_inventory item
-- Envelope metadata for sender, recipient, subject, tracking and mail type
-- Claim/take-envelope flow
-- Sealed/opened envelope state
+- Physical `reo_envelope` inventory items with metadata
+- Claim/take-envelope flow with duplicate-claim protection
 - Physical envelope inspection
-- Open-envelope and read-letter interactions
-- Server-side ownership and mail-record validation
-- Duplicate claim protection
-- Inventory-space handling
+- Sealed/opened envelope state
+- Server-side ownership and mail validation
+- Physical letter reading after opening
+- Delivery to characters who can retrieve the mail later
 
 ## Requirements
 
@@ -39,31 +36,29 @@ REO Mail is a server-wide physical mail and postal framework for FiveM. The v0.1
 
 ## Installation
 
-1. Place the `reo_mail` resource in your server resources folder.
+1. Place `reo_mail` in your server resources directory.
 2. Import `sql/reo_mail.sql` into your database.
-3. Add the item definition from `install/ox_inventory_item.lua` inside the main return table in `ox_inventory/data/items.lua`.
-4. Ensure dependencies start before REO Mail.
+3. Add the item definition from `install/ox_inventory_item.lua` to your ox_inventory items.
+4. Ensure the required dependencies start before REO Mail.
 5. Add `ensure reo_mail` to your server configuration.
-6. Restart the server and test on a development environment first.
+6. Restart the server/resource and test with a valid character.
 
-Example start order:
+## Development Commands
 
-```cfg
-ensure ox_lib
-ensure oxmysql
-ensure ox_inventory
-ensure qbx_core
-ensure reo_mail
-```
+- `/mypobox` — Display the current character's PO Box.
+- `/mymail` — Open the current character's persistent mailbox.
+- `/sendmail` — Compose and send a development-stage player-to-player letter by PO Box.
 
-## Development/Test Features
+`/sendmail` is currently a development interface. Future versions are intended to move letter composition and mailing into physical postal interactions.
 
-`Config.Development.enabled` is currently enabled because this release is intended for proof-of-concept and development testing. Review development commands/settings before using the resource outside a test environment.
+## Current Milestone
 
-## Planned Direction
+The persistent player-to-player delivery pipeline has been tested successfully from sender composition through recipient retrieval and physical letter reading.
 
-Future development is intended to expand REO Mail with property and business addresses, physical world mailboxes, player-composed mail, packages, certified mail, automated mail from other resources, document/government integrations, postal sorting, delivery routes, and a playable postal worker role.
+The next development phase will focus on physical postal interaction points and reducing reliance on development commands.
 
 ## License
 
-Copyright © 2026 REO Development. All rights reserved. See `LICENSE`.
+Copyright © 2026 REO Development. All Rights Reserved.
+
+This project may not be redistributed, resold, repackaged, or claimed as another developer's work without explicit permission from REO Development.

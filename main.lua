@@ -515,3 +515,77 @@ exports('openEnvelope', function(data, slot)
 
     lib.showContext('reo_mail_physical_envelope')
 end)
+
+-- ============================================================
+-- SECTION 5: PLAYER-TO-PLAYER MAIL COMPOSITION
+-- Development interface for proving persistent player delivery.
+-- ============================================================
+
+RegisterCommand('sendmail', function()
+    local input = lib.inputDialog('San Andreas Postal Service — Write Letter', {
+        {
+            type = 'number',
+            label = 'Recipient PO Box',
+            description = 'Enter the recipient PO Box number.',
+            required = true,
+            min = 1
+        },
+        {
+            type = 'input',
+            label = 'Subject',
+            description = 'Enter a subject for the letter.',
+            required = true,
+            min = 1,
+            max = 100
+        },
+        {
+            type = 'textarea',
+            label = 'Letter',
+            description = 'Write the contents of your letter.',
+            required = true,
+            min = 1,
+            max = 4000,
+            autosize = true
+        }
+    })
+
+    if not input then return end
+
+    local result = lib.callback.await('reo_mail:server:sendPlayerLetter', false, {
+        poBox = input[1],
+        subject = input[2],
+        body = input[3]
+    })
+
+    if not result or not result.success then
+        local reason = result and result.reason or 'unknown'
+        local message = 'Unable to send this letter.'
+
+        if reason == 'invalid_recipient' then
+            message = 'That PO Box could not be found.'
+        elseif reason == 'self_mail' then
+            message = 'You cannot send a letter to your own PO Box.'
+        elseif reason == 'invalid_content' then
+            message = 'The subject or letter contents are invalid.'
+        elseif reason == 'character_unavailable' then
+            message = 'Your postal identity could not be verified.'
+        end
+
+        lib.notify({
+            title = 'San Andreas Postal Service',
+            description = message,
+            type = 'error'
+        })
+        return
+    end
+
+    lib.notify({
+        title = 'San Andreas Postal Service',
+        description = ('Letter mailed to PO Box %s. Tracking: %s'):format(
+            tostring(result.poBox),
+            result.trackingNumber or 'Unknown'
+        ),
+        type = 'success',
+        duration = 8000
+    })
+end, false)
