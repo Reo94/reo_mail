@@ -1,0 +1,139 @@
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:Georgia,'Times New Roman',serif;background:transparent;color:#25282b}
+.hidden{display:none!important}
+
+/* REO MAIL v0.3.4 - Compact immersive reader
+   Keep the world visible and leave the center/left of the screen usable. */
+#reader{
+    position:fixed;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+    justify-content:center;
+    padding-right:4vw;
+    background:transparent;
+    pointer-events:none;
+    user-select:none;
+}
+
+.paper{
+    position:relative;
+    width:min(560px,42vw);
+    min-width:430px;
+    height:auto;
+    min-height:58vh;
+    max-height:72vh;
+    padding:34px 40px 28px;
+    background:linear-gradient(110deg,#eee9dc,#fffdf5 42%,#eee9dc);
+    box-shadow:0 12px 38px rgba(0,0,0,.48);
+    border:1px solid rgba(73,61,43,.28);
+    transform:rotate(-.25deg);
+    overflow:auto;
+    pointer-events:auto;
+}
+
+.paper:after{
+    content:"";
+    pointer-events:none;
+    position:absolute;
+    inset:0;
+    opacity:.17;
+    background-image:repeating-linear-gradient(0deg,transparent 0,transparent 3px,rgba(70,55,35,.08) 4px)
+}
+
+header{display:flex;justify-content:space-between;align-items:flex-start}
+.brand{display:flex;align-items:center;gap:10px;color:#102c49}
+.mark{font-size:27px}
+.brand strong{display:block;font-family:Arial,sans-serif;font-size:24px;font-style:italic}
+.brand span{display:block;font-family:Arial,sans-serif;font-size:8px;letter-spacing:2.4px;font-weight:700}
+.rule{height:2px;background:#102c49;margin:10px 0 24px}
+.date{text-align:right;font-size:13px;color:#555;margin-bottom:20px}
+.to{font-size:16px;margin-bottom:17px}
+h1{font-size:21px;font-weight:normal;margin:0 0 20px;border-bottom:1px solid rgba(0,0,0,.15);padding-bottom:10px}
+.body{font-size:16px;line-height:1.55;white-space:pre-wrap;user-select:text;min-height:110px}
+.signoff{font-size:15px;line-height:1.5;margin-top:28px}
+footer{display:flex;justify-content:space-between;gap:15px;border-top:1px solid rgba(0,0,0,.18);padding-top:10px;margin-top:28px;font:9px Arial,sans-serif;letter-spacing:.8px;color:#666}
+#close{position:relative;z-index:2;border:0;background:transparent;color:#444;font:26px Arial;cursor:pointer;padding:0 4px}
+.hint{margin-top:10px;margin-right:145px;color:#fff;font:12px Arial,sans-serif;letter-spacing:1.5px;text-shadow:0 2px 5px #000;pointer-events:none}
+
+@media(max-width:1100px){
+    #reader{padding-right:2vw}
+    .paper{width:46vw;min-width:390px;max-height:74vh;padding:30px 34px 25px}
+}
+
+@media(max-width:800px){
+    #reader{align-items:center;padding-right:0}
+    .paper{width:68vw;min-width:0;min-height:54vh;max-height:70vh;padding:26px 28px 22px}
+    .brand strong{font-size:21px}
+    .body{font-size:15px}
+    .hint{margin-right:0}
+}
+
+/* REO MAIL v0.4.0 - live recipient/business directory */
+.directory{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.38);font-family:Arial,sans-serif;pointer-events:auto}
+.directory-card{width:min(650px,70vw);max-height:72vh;background:#f8f4e9;border:1px solid rgba(30,45,60,.35);box-shadow:0 18px 55px rgba(0,0,0,.55);padding:24px;color:#20252a}
+.directory-head{display:flex;align-items:center;justify-content:space-between;color:#102c49;border-bottom:2px solid #102c49;padding-bottom:12px}.directory-head strong{display:block;font-size:25px;font-style:italic}.directory-head span{display:block;font-size:9px;letter-spacing:2.5px;font-weight:700}.directory-head button{border:0;background:transparent;font-size:27px;cursor:pointer}
+.directory-tabs{display:flex;gap:8px;margin:18px 0 14px}.directory-tabs button{border:1px solid #9ca5ad;background:#fff;padding:9px 15px;cursor:pointer}.directory-tabs button.active{background:#102c49;color:#fff;border-color:#102c49}
+#recipientSearch{width:100%;padding:13px 14px;border:1px solid #aeb5ba;background:#fff;font-size:15px;outline:none}.search-help{font-size:11px;color:#66717a;margin:7px 0 12px}.directory-results{display:flex;flex-direction:column;gap:7px;max-height:42vh;overflow:auto}.directory-result{display:flex;align-items:center;justify-content:space-between;width:100%;text-align:left;border:1px solid #d4d0c6;background:#fff;padding:11px 13px;cursor:pointer}.directory-result:hover{border-color:#102c49;background:#f2f6f8}.directory-result strong{display:block;font-size:14px}.directory-result span{font-size:11px;color:#6b747b}.directory-empty{padding:20px;text-align:center;color:#747474;font-size:13px}
+
+/* ============================================================
+   REO DEVELOPMENT - POSTAL TERMINAL v0.8.0
+   REO Mail dark transit-terminal visual language.
+   ============================================================ */
+:root{--fc-bg:#0b1118;--fc-panel:rgba(14,22,32,.96);--fc-line:rgba(92,143,196,.22);--fc-teal:#7db4e6;--fc-teal-dim:#416b91;--fc-text:#e5edf5;--fc-muted:#7e91a5;--fc-green:#73c58f}
+.terminal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,7,10,.48);font-family:'Arial Narrow','Roboto Condensed',Arial,sans-serif;color:var(--fc-text);pointer-events:auto;user-select:none}
+.terminal:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(84,215,209,.018) 0,rgba(84,215,209,.018) 1px,transparent 1px,transparent 5px);pointer-events:none}
+.terminal-shell{width:min(1080px,88vw);max-height:88vh;overflow:auto;padding:18px 22px 14px;background:linear-gradient(180deg,rgba(7,21,27,.97),rgba(3,12,17,.97));border:1px solid rgba(84,215,209,.28);box-shadow:0 24px 80px rgba(0,0,0,.7),inset 0 0 70px rgba(30,105,105,.06);position:relative}
+.terminal-shell:after{content:"";position:absolute;inset:8px;border:1px solid rgba(84,215,209,.07);pointer-events:none}
+.terminal-header{display:flex;justify-content:space-between;align-items:center;padding:4px 8px 14px;border-bottom:1px solid var(--fc-line)}
+.terminal-brand{display:flex;align-items:center;gap:11px}.reo-mark{border:1px solid var(--fc-teal-dim);padding:7px 8px;color:var(--fc-teal);font-weight:900;letter-spacing:2px}.terminal-brand strong{display:block;font-size:22px;letter-spacing:7px}.terminal-brand span{display:block;margin-top:4px;color:var(--fc-muted);font-size:9px;letter-spacing:3px}.terminal-status{display:flex;align-items:center;gap:8px;color:var(--fc-green);font-size:10px;letter-spacing:2px}.status-dot{width:7px;height:7px;border-radius:50%;background:var(--fc-green);box-shadow:0 0 12px var(--fc-green)}#terminalClose{margin-left:12px;border:1px solid var(--fc-line);background:transparent;color:var(--fc-teal);font-size:22px;width:34px;height:32px;cursor:pointer}#terminalClose:hover{background:rgba(125,180,230,.08)}
+.terminal-clock{text-align:center;padding:12px 0 7px}.terminal-clock div{font-size:31px;font-weight:300;letter-spacing:8px;color:var(--fc-teal);text-shadow:0 0 18px rgba(84,215,209,.25)}.terminal-clock span{font-size:9px;letter-spacing:3px;color:var(--fc-muted)}.terminal-rule{height:1px;background:linear-gradient(90deg,transparent,var(--fc-teal-dim),transparent);margin-bottom:13px}
+.terminal-intro{display:flex;justify-content:space-between;align-items:end;padding:0 8px 12px}.eyebrow{font-size:9px;letter-spacing:3px;color:var(--fc-teal-dim)}.terminal-intro h1{border:0;margin:4px 0 0;padding:0;color:var(--fc-text);font-size:18px;letter-spacing:6px;font-family:inherit;font-weight:700}.terminal-intro p{margin:0;color:var(--fc-muted);font-size:9px;letter-spacing:2px}
+.service-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 8px}.service-card{height:82px;display:grid;grid-template-columns:44px 1fr auto;align-items:center;gap:12px;text-align:left;border:1px solid rgba(125,180,230,.12);background:rgba(1,8,12,.64);color:var(--fc-text);padding:10px 14px;cursor:pointer;transition:.14s ease}.service-card:hover,.service-card.primary:hover{transform:translateY(-1px);border-color:rgba(125,180,230,.55);background:rgba(16,52,58,.52);box-shadow:inset 3px 0 var(--fc-teal),0 0 20px rgba(84,215,209,.07)}.service-card.primary{border-color:rgba(84,215,209,.28);box-shadow:inset 2px 0 var(--fc-teal-dim)}.service-card.subtle{opacity:.65}.service-card .number{font-size:11px;color:var(--fc-teal-dim);letter-spacing:2px}.service-card strong{display:block;font-size:19px;letter-spacing:5px;font-weight:600}.service-card small{display:block;margin-top:6px;color:var(--fc-muted);font-size:10px;letter-spacing:.7px}.service-card .state{font-size:8px;letter-spacing:2px;color:var(--fc-green);white-space:nowrap}.terminal-footer{display:flex;justify-content:space-between;margin:14px 8px 0;padding-top:11px;border-top:1px solid var(--fc-line);font-size:8px;letter-spacing:2px;color:var(--fc-muted)}
+@media(max-width:850px){.terminal-shell{width:94vw}.service-grid{grid-template-columns:1fr}.service-card{height:70px}.service-card strong{font-size:16px}.terminal-intro p{display:none}}
+
+/* REO DEVELOPMENT - v0.8.1 native postal supply shop */
+.supply-shop{padding:0 8px 4px}.shop-heading{display:flex;justify-content:space-between;align-items:end;padding:0 0 14px}.shop-heading h2{margin:5px 0 0;font-size:18px;letter-spacing:6px}.terminal-button{border:1px solid rgba(84,215,209,.32);background:rgba(2,18,23,.8);color:var(--fc-teal);padding:11px 18px;letter-spacing:2px;font-weight:700;cursor:pointer}.terminal-button:hover{border-color:var(--fc-teal);background:rgba(16,52,58,.7)}.terminal-button:disabled{opacity:.35;cursor:not-allowed}.terminal-button.purchase{min-width:180px;color:var(--fc-text);box-shadow:inset 3px 0 var(--fc-teal)}.terminal-button.ghost{font-size:10px}.supply-items{display:grid;gap:8px}.supply-row{display:grid;grid-template-columns:64px 1fr 150px 100px;align-items:center;gap:15px;min-height:88px;padding:10px 16px;border:1px solid rgba(84,215,209,.14);background:rgba(1,8,12,.66)}.supply-icon{width:54px;height:54px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(125,180,230,.12);background:rgba(84,215,209,.025)}.supply-icon img{max-width:48px;max-height:48px;object-fit:contain}.supply-info strong{display:block;font-size:16px;letter-spacing:3px}.supply-info small{display:block;color:var(--fc-muted);margin:6px 0;font-size:10px}.supply-info span{font-size:9px;letter-spacing:2px;color:var(--fc-teal)}.qty-control{display:grid;grid-template-columns:40px 54px 40px;align-items:center;text-align:center}.qty-control button{height:36px;border:1px solid rgba(84,215,209,.24);background:rgba(5,25,30,.85);color:var(--fc-teal);font-size:20px;cursor:pointer}.qty-control b{font-size:16px;letter-spacing:2px}.line-total{text-align:right;font-size:17px;color:var(--fc-text);letter-spacing:2px}.shop-checkout{display:flex;justify-content:flex-end;align-items:center;gap:35px;margin-top:14px;padding:14px 16px;border-top:1px solid var(--fc-line);background:rgba(1,8,12,.5)}.shop-checkout>div{text-align:right}.shop-checkout span,.shop-checkout small{display:block;color:var(--fc-muted);font-size:8px;letter-spacing:2px}.shop-checkout strong{display:block;margin:3px 0;font-size:24px;letter-spacing:3px;color:var(--fc-teal)}
+@media(max-width:850px){.supply-row{grid-template-columns:50px 1fr 135px}.line-total{display:none}.shop-checkout{justify-content:space-between}}
+
+
+/* REO MAIL v0.10.0 - non-locking terminal */
+#postalTerminal { pointer-events: none; }
+#postalTerminal.mouse-active { pointer-events: auto; }
+#postalTerminal.mouse-active .terminal-shell { box-shadow: 0 0 0 1px rgba(55,255,229,.20), 0 18px 60px rgba(0,0,0,.55); }
+
+
+/* ============================================================
+   REO DEVELOPMENT - v0.11 UNIFIED TERMINAL SUBPAGES
+   ============================================================ */
+.service-detail-card {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 24px;
+    align-items: center;
+    padding: 30px;
+    margin-top: 22px;
+    border: 1px solid rgba(57, 225, 215, .28);
+    background: linear-gradient(135deg, rgba(8, 28, 35, .90), rgba(5, 14, 20, .82));
+    box-shadow: inset 0 0 40px rgba(31, 211, 199, .035);
+}
+.service-detail-number { font-size: 64px; font-weight: 800; color: rgba(91, 238, 226, .30); letter-spacing: -4px; }
+.service-detail-copy strong { display:block; font-size: 28px; letter-spacing: 2px; color:#effffc; }
+.service-detail-copy p { max-width: 720px; color: rgba(225,245,244,.68); line-height:1.6; }
+.service-detail-copy span { color:#8cc5f2; font-size:12px; letter-spacing:2px; }
+.service-detail-actions { display:flex; justify-content:flex-end; padding-top:22px; }
+.supply-icon img { width: 76px; height: 76px; object-fit: contain; display:block; filter: drop-shadow(0 8px 14px rgba(0,0,0,.35)); }
+
+/* REO DEVELOPMENT v0.12 unified service pages */
+.service-dynamic{display:grid;gap:10px;margin:18px 0;max-height:48vh;overflow:auto;padding-right:6px}.terminal-list-card{border:1px solid rgba(111,174,224,.25);background:rgba(4,18,25,.72);padding:14px 16px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}.terminal-list-card strong{display:block;color:#eaffff;font-size:15px}.terminal-list-card small{display:block;color:#8faeb3;margin-top:5px;white-space:pre-line}.terminal-list-card button{border:1px solid #6faee0;background:rgba(65,107,145,.28);color:#eef7ff;padding:9px 14px;cursor:pointer}.terminal-empty{padding:30px;text-align:center;border:1px dashed rgba(111,174,224,.25);color:#86a7aa}.terminal-badge{color:#8cc5f2;font-size:11px;letter-spacing:.12em}
+
+
+/* ============================================================
+   REO DEVELOPMENT - v0.13.0 POSTAL STOREFRONT / SUPPLY ART
+   ============================================================ */
+.welcome-intro{align-items:flex-start}.welcome-copy{margin:7px 0 0!important;max-width:650px!important;text-align:left!important;line-height:1.55!important;color:#80989b!important;letter-spacing:.8px!important}
+.postal-welcome{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 8px 14px}.postal-welcome article{min-height:100px;padding:14px 16px;border:1px solid rgba(84,215,209,.15);background:linear-gradient(145deg,rgba(4,25,31,.84),rgba(1,8,12,.68));box-shadow:inset 2px 0 rgba(125,180,230,.35)}.postal-welcome span{display:block;font-size:8px;letter-spacing:2px;color:var(--fc-teal)}.postal-welcome strong{display:block;margin:7px 0 5px;font-size:13px;letter-spacing:2.5px}.postal-welcome p{margin:0;color:var(--fc-muted);font-size:9px;line-height:1.55}
+.supply-items{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.supply-row.supply-card{display:flex;flex-direction:column;min-height:310px;padding:0;overflow:hidden;border:1px solid rgba(125,180,230,.18);background:linear-gradient(155deg,rgba(7,32,39,.92),rgba(1,9,13,.92))}.supply-card:hover{border-color:rgba(125,180,230,.55);box-shadow:0 0 22px rgba(125,180,230,.08),inset 0 1px rgba(125,180,230,.16)}.supply-art{height:150px;position:relative;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 45%,rgba(125,180,230,.09),rgba(1,8,12,.25) 55%,rgba(1,8,12,.7));border-bottom:1px solid rgba(125,180,230,.12);overflow:hidden}.supply-art img{display:block!important;width:88%;height:88%;max-width:180px;max-height:135px;object-fit:contain;filter:drop-shadow(0 10px 12px rgba(0,0,0,.5))}.supply-art .image-fallback{position:absolute;color:rgba(125,180,230,.35);font-size:12px;letter-spacing:4px}.supply-info{padding:12px 14px 8px;min-height:92px}.supply-info strong{font-size:14px;letter-spacing:2px}.supply-info small{min-height:30px;line-height:1.45}.supply-info span{font-size:13px;color:#8cc5f2}.supply-buy{margin-top:auto;padding:0 14px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px}.supply-buy .qty-control{grid-template-columns:34px 42px 34px}.supply-buy .qty-control button{height:34px}.supply-buy .line-total{font-size:14px;color:var(--fc-teal)}
+@media(max-width:950px){.postal-welcome{grid-template-columns:1fr}.postal-welcome article{min-height:70px}.supply-items{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.supply-items{grid-template-columns:1fr}.supply-row.supply-card{min-height:280px}}

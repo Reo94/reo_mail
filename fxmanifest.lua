@@ -2,7 +2,7 @@
 -- REO DEVELOPMENT
 -- REO MAIL
 -- Server-Wide Physical Mail & Postal Framework
--- Version 0.1.0 — Active Development
+-- Version 2.0.0 Stable Public Core Release
 -- ============================================================
 
 fx_version 'cerulean'
@@ -10,7 +10,7 @@ game 'gta5'
 
 author 'REO Development'
 description 'Server-wide physical mail and postal framework for FiveM.'
-version '0.1.0'
+version '2.0.0'
 
 lua54 'yes'
 
@@ -29,21 +29,36 @@ shared_scripts {
 -- ============================================================
 
 client_scripts {
-    'client/main.lua'
+    'client/main.lua',
+    'client/prepared_mail.lua'
 }
 
 -- ============================================================
--- SECTION 3: SERVER SCRIPTS
+-- SECTION 3: NUI LETTER READER
+-- ============================================================
+
+ui_page 'web/index.html'
+
+files {
+    'web/index.html',
+    'web/style.css',
+    'web/app.js',
+    'web/images/*.png'
+}
+
+-- ============================================================
+-- SECTION 4: SERVER SCRIPTS
 -- ============================================================
 
 server_scripts {
     '@oxmysql/lib/MySQL.lua',
     'server/main.lua',
-    'bridges/server/qbx.lua'
+    'bridges/server/qbx.lua',
+    'server/prepared_mail.lua'
 }
 
 -- ============================================================
--- SECTION 4: DEPENDENCIES
+-- SECTION 5: DEPENDENCIES
 -- ============================================================
 
 dependencies {

@@ -294,122 +294,7 @@ end)
 
 
 -- ============================================================
--- SECTION 8: OPEN PHYSICAL ENVELOPE
--- ============================================================
-
-lib.callback.register('reo_mail:server:openPhysicalEnvelope', function(source, slotId)
-
-    local characterId = GetCharacterId(source)
-
-    if not characterId or not slotId then
-        return nil, 'invalid_envelope'
-    end
-
-    -- --------------------------------------------------------
-    -- Validate Inventory Item
-    -- --------------------------------------------------------
-
-    local slot = exports.ox_inventory:GetSlot(source, slotId)
-
-    if not slot or slot.name ~= 'reo_envelope' then
-        return nil, 'invalid_envelope'
-    end
-
-    local metadata = slot.metadata or {}
-    local mailId = tonumber(metadata.mailId)
-
-    if not mailId then
-        return nil, 'invalid_envelope'
-    end
-
-    -- --------------------------------------------------------
-    -- Validate Postal Record
-    -- --------------------------------------------------------
-
-    local mail = MySQL.single.await([[
-        SELECT *
-        FROM reo_mail_items
-        WHERE id = ?
-          AND recipient_character_id = ?
-        LIMIT 1
-    ]], {
-        mailId,
-        characterId
-    })
-
-    if not mail then
-        return nil, 'mail_not_found'
-    end
-
-    -- --------------------------------------------------------
-    -- Update Physical Envelope State
-    -- --------------------------------------------------------
-
-    local wasOpened = metadata.opened == true
-
-    if not wasOpened then
-
-        metadata.opened = true
-        metadata.label = 'Opened Envelope'
-
-        metadata.description =
-            ('Opened Mail | From: %s | Tracking: %s')
-                :format(
-                    mail.sender_name or 'Unknown Sender',
-                    mail.tracking_number or 'Unknown'
-                )
-
-        exports.ox_inventory:SetMetadata(
-            source,
-            slotId,
-            metadata
-        )
-
-        if Config.Debug then
-            print(
-                ('[reo_mail] Character %s opened physical Mail ID %s in inventory slot %s for the first time.')
-                    :format(
-                        characterId,
-                        mail.id,
-                        slotId
-                    )
-            )
-        end
-
-    elseif Config.Debug then
-
-        print(
-            ('[reo_mail] Character %s reopened physical Mail ID %s in inventory slot %s.')
-                :format(
-                    characterId,
-                    mail.id,
-                    slotId
-                )
-        )
-    end
-
-    -- --------------------------------------------------------
-    -- Return Mail Information
-    -- --------------------------------------------------------
-
-    return {
-        id = mail.id,
-        trackingNumber = mail.tracking_number,
-        senderName = mail.sender_name,
-        recipientName = mail.recipient_name,
-        subject = mail.subject or 'No Subject',
-        body = mail.body or '',
-        status = mail.status,
-        mailType = mail.mail_type,
-        createdAt = mail.created_at,
-        claimed = mail.claimed_at ~= nil,
-        firstOpen = not wasOpened
-    }
-end)
-
--- ============================================================
--- SECTION 10: PLAYER-TO-PLAYER LETTER DELIVERY
--- Development interface used by /sendmail.
+-- SECTION 10: CHARACTER DISPLAY NAME
 -- ============================================================
 
 local function GetCharacterDisplayName(source)
@@ -428,72 +313,42 @@ local function GetCharacterDisplayName(source)
     return data.name or data.citizenid or 'Unknown Sender'
 end
 
-lib.callback.register('reo_mail:server:sendPlayerLetter', function(source, data)
-    if source == 0 or type(data) ~= 'table' then
-        return { success = false, reason = 'invalid_content' }
+
+REO_MAIL.Server.GetCharacterDisplayName = GetCharacterDisplayName
+
+-- ============================================================
+-- SECTION 11: CHARACTER JOB
+-- Used by business mailbox authorization.
+-- ============================================================
+
+local function GetCharacterJobName(source)
+    local data = GetCharacterData(source)
+    if not data or not data.job then return nil end
+    return data.job.name
+end
+
+REO_MAIL.Server.GetCharacterJobName = GetCharacterJobName
+
+-- ============================================================
+-- SECTION 12: CASH HELPERS
+-- Used by package postage and lost-mail recovery.
+-- ============================================================
+
+if not REO_MAIL.Server.GetCash then
+    REO_MAIL.Server.GetCash = function(source)
+        local data = GetCharacterData(source)
+        return data and data.money and tonumber(data.money.cash) or 0
     end
-
-    local senderCharacterId = GetCharacterId(source)
-    if not senderCharacterId then
-        return { success = false, reason = 'character_unavailable' }
+end
+if not REO_MAIL.Server.RemoveCash then
+    REO_MAIL.Server.RemoveCash = function(source, amount, reason)
+        local player = exports.qbx_core:GetPlayer(source)
+        return player and player.Functions and player.Functions.RemoveMoney('cash', amount, reason or 'reo-mail') == true or false
     end
-
-    local poBox = tonumber(data.poBox)
-    local subject = type(data.subject) == 'string' and data.subject:gsub('^%s+', ''):gsub('%s+$', '') or ''
-    local body = type(data.body) == 'string' and data.body:gsub('^%s+', ''):gsub('%s+$', '') or ''
-
-    if not poBox or subject == '' or body == '' or #subject > 100 or #body > 4000 then
-        return { success = false, reason = 'invalid_content' }
+end
+if not REO_MAIL.Server.AddCash then
+    REO_MAIL.Server.AddCash = function(source, amount, reason)
+        local player = exports.qbx_core:GetPlayer(source)
+        return player and player.Functions and player.Functions.AddMoney('cash', amount, reason or 'reo-mail-refund') == true or false
     end
-
-    local recipientProfile = MySQL.single.await(
-        'SELECT character_id, po_box FROM reo_mail_profiles WHERE po_box = ? LIMIT 1',
-        { poBox }
-    )
-
-    if not recipientProfile then
-        return { success = false, reason = 'invalid_recipient' }
-    end
-
-    if recipientProfile.character_id == senderCharacterId then
-        return { success = false, reason = 'self_mail' }
-    end
-
-    local senderName = GetCharacterDisplayName(source)
-    local result = REO_MAIL.Server.CreateMail({
-        recipientCharacterId = recipientProfile.character_id,
-        recipientName = ('PO Box %s Recipient'):format(recipientProfile.po_box),
-        senderType = REO_MAIL.SenderTypes.CHARACTER,
-        senderId = senderCharacterId,
-        senderName = senderName,
-        mailType = REO_MAIL.Types.LETTER,
-        subject = subject,
-        body = body
-    })
-
-    if not result then
-        return { success = false, reason = 'creation_failed' }
-    end
-
-    -- For this development stage, player letters are delivered directly
-    -- to the recipient's persistent mailbox. Postal routing comes later.
-    MySQL.update.await([[
-        UPDATE reo_mail_items
-        SET status = ?, delivered_at = CURRENT_TIMESTAMP
-        WHERE id = ?
-    ]], { REO_MAIL.Status.DELIVERED, result.id })
-
-    if Config.Debug then
-        print(
-            ('[reo_mail] %s (%s) mailed letter %s to PO Box %s (%s).')
-                :format(senderName, senderCharacterId, result.trackingNumber, poBox, recipientProfile.character_id)
-        )
-    end
-
-    return {
-        success = true,
-        mailId = result.id,
-        trackingNumber = result.trackingNumber,
-        poBox = recipientProfile.po_box
-    }
-end)
+end

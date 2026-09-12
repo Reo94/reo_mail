@@ -1,64 +1,61 @@
-# REO Mail
+# REO Mail v2.0.0 — Core Postal Framework
 
-**Server-Wide Physical Mail & Postal Framework for FiveM**
+REO Mail is a server-wide physical postal framework for FiveM developed by **REO Development**. It provides a configurable core for physical letters, packages, PO Boxes, tracking, signatures, postal supplies, mailbox delivery, public post boxes, and postal service interactions.
 
-REO Mail is an REO Development project focused on creating a persistent physical postal system that can connect players, residences, businesses, inventories, documents, and other server resources.
+## Core Features
 
-## Current Development Status
-
-The current development checkpoint has a tested end-to-end player mail lifecycle:
-
-**Player A → Compose Letter → Recipient PO Box → Persistent Mailbox → Physical Envelope → Open → Read**
-
-### Working Features
-
-- Persistent character postal profiles and PO Boxes
-- `/mypobox` to view the current character's PO Box
-- `/mymail` persistent mailbox interface
-- `/sendmail` player-to-player letter composition interface
-- Recipient lookup by PO Box
-- Persistent player-to-player delivery
-- Unique REO tracking numbers
-- Physical `reo_envelope` inventory items with metadata
-- Claim/take-envelope flow with duplicate-claim protection
-- Physical envelope inspection
-- Sealed/opened envelope state
-- Server-side ownership and mail validation
-- Physical letter reading after opening
-- Delivery to characters who can retrieve the mail later
+- Persistent character postal profiles and permanent PO Boxes
+- Character recipient search
+- Physical letters, prepared letters, envelopes, and letter reading UI
+- Postal supply purchasing
+- Small, Medium, Large, and Extra Large shipping boxes
+- Standard, Priority, Overnight, and Express services
+- Persistent package delivery timers
+- Package tracking and pickup flows
+- Anonymous sender and signature-required options
+- Refusal and return-to-sender lifecycle
+- Configurable mailbox delivery eligibility by mail/package size
+- Vanilla GTA V public post box support for eligible prepared mail
+- Configurable postal counter/clerk location
+- Optional configurable business mailboxes
+- Qbox/QBX + ox_lib + ox_inventory + oxmysql integration
 
 ## Requirements
 
-- Qbox / QBX
+- qbx_core / Qbox
 - ox_lib
-- oxmysql
 - ox_inventory
+- oxmysql
 
 ## Installation
 
-1. Place `reo_mail` in your server resources directory.
-2. Import `sql/reo_mail.sql` into your database.
-3. Add the item definition from `install/ox_inventory_item.lua` to your ox_inventory items.
-4. Ensure the required dependencies start before REO Mail.
-5. Add `ensure reo_mail` to your server configuration.
-6. Restart the server/resource and test with a valid character.
+1. Extract the resource folder as `reo_mail` into your FiveM server resources directory.
+2. Import `sql/reo_mail.sql` for a fresh installation.
+3. Add the item definitions from `install/ox_inventory_item.lua` to your ox_inventory item configuration.
+4. Copy the matching PNG files from `install/images/` into the appropriate ox_inventory image directory for your inventory setup.
+5. Review `config.lua`, including postal locations, pricing, package services, mailbox eligibility, and optional business mailboxes.
+6. Ensure `qbx_core`, `ox_lib`, `ox_inventory`, and `oxmysql` start before REO Mail.
+7. Add `ensure reo_mail` to `server.cfg`.
+8. Restart the server and verify the postal systems before production use.
 
-## Development Commands
+## Business Mailboxes
 
-- `/mypobox` — Display the current character's PO Box.
-- `/mymail` — Open the current character's persistent mailbox.
-- `/sendmail` — Compose and send a development-stage player-to-player letter by PO Box.
+`Config.Businesses` is designed to be configurable by individual server owners. Add server-specific businesses through configuration rather than modifying the core postal logic.
 
-`/sendmail` is currently a development interface. Future versions are intended to move letter composition and mailing into physical postal interactions.
+## Resource Structure
 
-## Current Milestone
-
-The persistent player-to-player delivery pipeline has been tested successfully from sender composition through recipient retrieval and physical letter reading.
-
-The next development phase will focus on physical postal interaction points and reducing reliance on development commands.
+- `client/` — client-side postal interactions and UI integration
+- `server/` — server-side postal logic and persistence
+- `bridges/` — framework integration
+- `shared/` — shared constants and configuration support
+- `web/` — REO Mail postal terminal interface and images
+- `install/` — inventory item definitions and item images
+- `sql/` — fresh-install schema and historical upgrade scripts
 
 ## License
 
 Copyright © 2026 REO Development. All Rights Reserved.
 
-This project may not be redistributed, resold, repackaged, or claimed as another developer's work without explicit permission from REO Development.
+REO Mail is distributed under the **REO Development Limited Use License** included in `LICENSE`. Use and modification are permitted for personal use and FiveM server use subject to that license. Sale, resale, paid repackaging, and false authorship are prohibited. Modified redistribution must retain REO Development attribution and identify modifications.
+
+Third-party frameworks, dependencies, trademarks, names, and assets remain the property of their respective owners. REO Development is not affiliated with or endorsed by those third parties.

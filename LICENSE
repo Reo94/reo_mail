@@ -1,8 +1,37 @@
-REO DEVELOPMENT — ALL RIGHTS RESERVED
-Copyright (c) 2026 REO Development
+REO DEVELOPMENT LIMITED USE LICENSE
 
-This source code and associated files are provided for viewing, testing, and use only with permission from REO Development.
+Copyright (c) 2026 REO Development. All Rights Reserved.
 
-No permission is granted to sell, redistribute, relicense, republish, or claim this work, in whole or in part, as your own without prior written permission from REO Development.
+This license applies to REO Mail and the original source code, configuration, documentation, and original assets distributed with this resource by REO Development (the “Software”).
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT.
+1. PERMITTED USE
+Permission is granted to download, install, use, and modify the Software for personal use or use on a FiveM server.
+
+2. MODIFICATION
+You may modify the Software to meet the needs of your server or community. Modified versions must not be represented as the original, unmodified REO Development release.
+
+3. REDISTRIBUTION
+Redistribution of the Software or a modified version is permitted only when:
+- REO Development attribution is retained;
+- this copyright notice and license remain included;
+- material modifications are clearly identified; and
+- the redistribution is not sold, licensed for a fee, placed behind a paid download, or otherwise commercially repackaged.
+
+4. PROHIBITED USE
+You may not:
+- sell, resell, or commercially repackage the Software;
+- claim authorship of REO Development's original work;
+- remove or intentionally obscure REO Development copyright or attribution notices;
+- use the REO Development name or branding to imply endorsement of an unofficial or modified release; or
+- redistribute the Software under terms that conflict with this license.
+
+5. THIRD-PARTY SOFTWARE AND ASSETS
+FiveM, Cfx.re, Qbox/QBX, ox_lib, ox_inventory, oxmysql, and any other third-party names, software, trademarks, or assets referenced by or used with the Software remain the property of their respective owners and are governed by their own terms and licenses. They are not relicensed by this document. No affiliation or endorsement is implied.
+
+6. NO WARRANTY
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
+
+7. LIMITATION OF LIABILITY
+IN NO EVENT SHALL REO DEVELOPMENT OR ITS CONTRIBUTORS BE LIABLE FOR ANY CLAIM, DAMAGES, DATA LOSS, SERVER INTERRUPTION, OR OTHER LIABILITY ARISING FROM THE USE, MODIFICATION, DISTRIBUTION, OR INABILITY TO USE THE SOFTWARE.
+
+By using, modifying, or redistributing the Software, you agree to the terms of this license.

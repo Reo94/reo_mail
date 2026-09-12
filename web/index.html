@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main id="postalTerminal" class="terminal hidden" aria-hidden="true">
+    <div class="terminal-shell">
+      <header class="terminal-header">
+        <div class="terminal-brand"><div class="reo-mark">REO</div><div><strong>MAIL</strong><span>SAN ANDREAS POSTAL SERVICES</span></div></div>
+        <div class="terminal-status"><span class="status-dot"></span><span>SYSTEM ONLINE</span><button id="terminalClose" aria-label="Close">×</button></div>
+      </header>
+      <div class="terminal-clock"><div id="terminalTime">--:--:--</div><span id="terminalDate">POSTAL TERMINAL</span></div>
+      <div class="terminal-rule"></div>
+      <section class="terminal-intro welcome-intro"><div><span class="eyebrow"># SAN ANDREAS POSTAL NETWORK</span><h1>WELCOME TO POSTAL SERVICES</h1><p class="welcome-copy">Prepare, send, collect and track physical mail across San Andreas from one terminal.</p></div><p id="terminalStation">SAN ANDREAS POSTAL SERVICE</p></section>
+      <section id="postalWelcome" class="postal-welcome">
+        <article><span>01 / GET SUPPLIES</span><strong>PREPARE YOUR MAIL</strong><p>Purchase letters, envelopes and shipping boxes here, then prepare them from your inventory.</p></article>
+        <article><span>02 / DROP OFF</span><strong>MAIL IT YOUR WAY</strong><p>Prepared letters and sealed envelopes can be deposited here or at supported public street mailboxes. Packages must be handed in at GoPostal.</p></article>
+        <article><span>03 / RECEIVE</span><strong>COLLECT & SIGN</strong><p>Use Pick Up or My PO Box for waiting mail. Signature-required items must be accepted before collection.</p></article>
+      </section>
+      <div id="terminalHome">
+      <section class="service-grid">
+        <button class="service-card primary" data-action="prepared_mail"><span class="number">01</span><div><strong>SEND MAIL</strong><small>Deposit prepared letters & sealed envelopes</small></div><span class="state">READY</span></button>
+        <button class="service-card" data-action="package_drop"><span class="number">02</span><div><strong>SEND PACKAGE</strong><small>Drop off sealed & addressed packages</small></div><span class="state">READY</span></button>
+        <button class="service-card" data-action="package_pickup"><span class="number">03</span><div><strong>PICK UP</strong><small>Collect mail & packages awaiting pickup</small></div><span class="state">COUNTER</span></button>
+        <button class="service-card" data-action="tracking"><span class="number">04</span><div><strong>TRACKING</strong><small>Shipment status & estimated arrival</small></div><span class="state">LIVE</span></button>
+        <button class="service-card" data-action="supplies"><span class="number">05</span><div><strong>POSTAL SUPPLIES</strong><small>Letters, envelopes & preparation supplies</small></div><span class="state">STOCKED</span></button>
+        <button class="service-card" data-action="mailbox"><span class="number">06</span><div><strong>MY PO BOX</strong><small>View mail waiting at your postal address</small></div><span class="state">OPEN</span></button>
+        <button class="service-card" data-action="recovery"><span class="number">07</span><div><strong>LOST MAIL</strong><small>Recover eligible previously claimed mail</small></div><span class="state">RECOVERY</span></button>
+        <button class="service-card subtle" data-action="legacy_letter"><span class="number">08</span><div><strong>LEGACY LETTER</strong><small>Original direct-send workflow for testing</small></div><span class="state">DEV</span></button>
+      </section>
+      </div>
+      <section id="terminalServicePage" class="supply-shop hidden">
+        <div class="shop-heading"><div><span class="eyebrow" id="serviceEyebrow"># POSTAL SERVICE</span><h2 id="serviceTitle">SERVICE</h2></div><button id="serviceBack" class="terminal-button ghost">← BACK</button></div>
+        <div class="service-detail-card">
+          <div class="service-detail-number" id="serviceNumber">01</div>
+          <div class="service-detail-copy"><strong id="serviceHeading">POSTAL SERVICE</strong><p id="serviceDescription">Select continue to use this service.</p><span id="serviceStatus">SYSTEM READY</span></div>
+        </div>
+        <div id="serviceDynamic" class="service-dynamic"></div><div class="service-detail-actions"><button id="serviceContinue" class="terminal-button purchase">REFRESH</button></div>
+      </section>
+      <section id="postalSupplyShop" class="supply-shop hidden">
+        <div class="shop-heading"><div><span class="eyebrow"># POSTAL SUPPLY COUNTER</span><h2>SELECT YOUR SUPPLIES</h2></div><button id="supplyBack" class="terminal-button ghost">← BACK</button></div>
+        <div id="supplyItems" class="supply-items"></div>
+        <div class="shop-checkout"><div><span>ORDER TOTAL</span><strong id="supplyTotal">$0</strong><small>CASH PAYMENT</small></div><button id="supplyPurchase" class="terminal-button purchase" disabled>PURCHASE</button></div>
+      </section>
+      <footer class="terminal-footer"><span>REO DEVELOPMENT // REO MAIL CORE v2.0.0</span><span>LEFT ALT • TERMINAL / CAMERA &nbsp;&nbsp; ESC • CLOSE &nbsp;&nbsp; F10 • FAILSAFE</span></footer>
+    </div>
+  </main>
+
+  <main id="reader" class="hidden"><section class="paper"><header><div class="brand"><div class="mark">✉</div><div><strong>REO MAIL</strong><span>SAN ANDREAS POSTAL SERVICE</span></div></div><button id="close" aria-label="Close">×</button></header><div class="rule"></div><div class="date" id="date"></div><div class="to">Dear <span id="recipient"></span>,</div><h1 id="subject"></h1><div id="body" class="body"></div><div class="signoff">Sincerely,<br><strong id="sender"></strong></div><footer><span id="tracking"></span><span>REO MAIL • PHYSICAL LETTER</span></footer></section><div class="hint">LEFT ALT • Toggle mouse &nbsp;&nbsp; ESC • Close letter</div></main>
+  <section id="directory" class="directory hidden"><div class="directory-card"><div class="directory-head"><div><strong>REO MAIL</strong><span>RECIPIENT DIRECTORY</span></div><button id="directoryClose">×</button></div><div class="directory-tabs"><button class="tab active" data-tab="people">People</button><button class="tab" data-tab="businesses">Businesses</button></div><div id="peoplePanel" class="directory-panel"><input id="recipientSearch" autocomplete="off" placeholder="Start typing a first or last name..." /><div class="search-help">Matches update as you type. Citizen IDs stay private.</div><div id="recipientResults" class="directory-results"></div></div><div id="businessPanel" class="directory-panel hidden"><div id="businessResults" class="directory-results"></div></div></div></section>
+  <script src="app.js"></script>
+</body>
+</html>

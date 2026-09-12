@@ -8,6 +8,7 @@
 CREATE TABLE IF NOT EXISTS `reo_mail_profiles` (
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `character_id` VARCHAR(100) NOT NULL,
+    `display_name` VARCHAR(150) DEFAULT NULL,
     `po_box` INT UNSIGNED NOT NULL,
     `preferred_address_type` VARCHAR(50) NOT NULL DEFAULT 'po_box',
     `preferred_address_id` VARCHAR(100) DEFAULT NULL,
@@ -27,6 +28,7 @@ CREATE TABLE IF NOT EXISTS `reo_mail_items` (
     `recipient_character_id` VARCHAR(100) NOT NULL,
     `recipient_name` VARCHAR(150) DEFAULT NULL,
     `mail_type` VARCHAR(50) NOT NULL DEFAULT 'letter',
+    `letter_template` VARCHAR(50) NOT NULL DEFAULT 'basic',
     `subject` VARCHAR(100) DEFAULT NULL,
     `body` TEXT DEFAULT NULL,
     `status` VARCHAR(50) NOT NULL DEFAULT 'created',
